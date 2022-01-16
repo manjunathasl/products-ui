@@ -1,0 +1,9 @@
+.search-box {
+  position: relative;
+}
+.search-box .search-clear {
+    position: absolute;
+    right: 10px;
+    top: 6px;
+    cursor: pointer;
+  }

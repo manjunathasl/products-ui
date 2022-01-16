@@ -1,0 +1,14 @@
+.home {
+    max-width: 1320px;
+    width: 90%;
+    margin-right: 5%;
+    margin-left: 5%;
+}
+.home div {
+    min-height: 60px;
+}
+.user {
+    display: flex;
+    justify-content: right;
+    padding: 10px;
+}
