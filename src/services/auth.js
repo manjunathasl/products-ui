@@ -1,31 +1,40 @@
 import { post } from "axios";
-import { setToken, removeToken, BASE_URL, getToken } from "./http";
+import { setToken, removeToken, BASE_URL, getToken, get } from "./http";
 
 const login = async (username, password) => {
-  const result = await post(`/auth/login`, {
-    username,
-    password,
-  });
-  const accessToken = result.data.accessToken;
-  setToken(accessToken);
-  return result.data;
+  try {
+    const res = await post(`${BASE_URL}/auth/login`, {
+      username,
+      password,
+    });
+    const accessToken = res.data.access_token;
+    setToken(accessToken);
+    const userRes  = await get("user");
+    return userRes.data;
+  } catch (error) {
+    throw error?.response?.data ?? new Error("Service error");
+  }
 };
 
-const signup = async (username, password) => {
-  await post(`${BASE_URL}/auth/signup`, { username, password });
+const signup = async (user) => {
+  try {
+    const res = await post(`${BASE_URL}/auth/signup`, user);
+    return res.data;
+  } catch (error) {
+    throw error?.response?.data ?? new Error("Service error");
+  }
 };
 
-const tokenExpiresIn = async (username, password) => {
-  const token = getToken();
+const tokenExpiresIn =  (token) => {
 
-  return 0;
+  return 1;
 };
 
-const isLoggedIn =  () => {
+const isLoggedIn = () => {
   const token = getToken();
   if (!token) return false;
 
-  if (tokenExpiresIn() === 0) return false;
+  if (tokenExpiresIn() < 1) return false;
 
   return true;
 };

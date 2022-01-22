@@ -1,13 +1,26 @@
 import { useState } from "react";
 import useForm from "../hooks/useForm.js";
 import Input from "../components/Input";
-
-import authSvc from "../services/auth";
+import { useNavigate } from "react-router-dom";
+import { login } from "../services/auth";
 
 export default function Login() {
   let initialState = { userName: "", password: "" };
 
-  const onSubmit = () => {};
+  const [svcError, setSvcError] = useState("");
+  const navigate = useNavigate();
+
+  const onSubmit = async () => {
+    setSvcError("");
+    try {
+      const data = await login(state.userName, state.password);
+      if (data.userName) {
+        navigate("/");
+      }
+    } catch (error) {
+      setSvcError(error.message);
+    }
+  };
 
   const validate = (state) => {
     let error = {};
@@ -30,8 +43,6 @@ export default function Login() {
     validate,
     onSubmit
   );
-
-  const [svcError, setSvcError] = useState("");
 
   return (
     <div className="align-center">

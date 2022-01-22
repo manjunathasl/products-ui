@@ -1,6 +1,8 @@
 import { useState } from "react";
 import useForm from "../hooks/useForm.js";
 import Input from "../components/Input";
+import { useNavigate } from "react-router-dom";
+import { signup } from "../services/auth";
 
 export default function SignUp() {
   let initialState = {
@@ -10,7 +12,25 @@ export default function SignUp() {
     confirmPassword: "",
   };
 
-  const onSubmit = () => {};
+  const navigate = useNavigate();
+  const [svcError, setSvcError] = useState("");
+
+  const onSubmit = async() => {
+    setSvcError("");
+    try {
+      const user = {
+        userName: state.userName,
+        password: state.password,
+        dob: state.dob,
+      }
+      const data = await signup(user);
+      if (data.userName) {
+        navigate("/login");
+      }
+    } catch (error) {
+      setSvcError(error.message);
+    }
+  };
 
   const validate = (state) => {
     let error = {};
@@ -45,8 +65,6 @@ export default function SignUp() {
     validate,
     onSubmit
   );
-
-  const [svcError, setSvcError] = useState("");
 
   return (
     <div className="align-center">

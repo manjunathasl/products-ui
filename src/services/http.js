@@ -5,7 +5,7 @@ const BASE_URL = "http://localhost:8080";
 const axiosInstance = axios.create({ baseURL: BASE_URL });
 
 function redirectToLogin() {
-  window.location.hash = "/login";
+  window.location = "/login";
 }
 
 function getAuthHeaders() {
@@ -33,7 +33,7 @@ const removeToken = () => {
 
 const get = async (endpoint, options = {}) => {
   return axiosInstance
-    .get(`/${endpoint}`, { ...options, ...this.getAuthHeaders() })
+    .get(`/${endpoint}`, { ...options, ...getAuthHeaders() })
     .catch((error) => handleError(error));
 };
 
@@ -49,7 +49,7 @@ function handleError(error) {
   if (statusCode !== 401) {
     throw error;
   } else {
-    return this.redirectToLogin();
+    return redirectToLogin();
   }
 }
 
