@@ -1,7 +1,7 @@
 # Steps to run - 
 
-Clone the repository.
+clone the repository.
 
-Got product-ui dir npm install
+go to product-ui dir npm install
 
 run npm start
