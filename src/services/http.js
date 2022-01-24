@@ -1,4 +1,6 @@
 import axios from "axios";
+import jwtDecode from "jwt-decode";
+import jwt from "jwt-decode";
 
 const BASE_URL = "http://localhost:8080";
 
@@ -17,7 +19,11 @@ function getAuthHeaders() {
 }
 
 const setToken = (accessToken) => {
-  return localStorage.setItem("accessToken", accessToken);
+  const { exp, iat } = jwt(accessToken);
+  const timeNow = new Date();
+  timeNow.setSeconds(timeNow.getSeconds() + (exp - iat));
+  localStorage.setItem("expiresIn", timeNow);
+  localStorage.setItem("accessToken", accessToken);
 };
 
 const getToken = () => {
@@ -27,6 +33,7 @@ const getToken = () => {
 const removeToken = () => {
   localStorage.removeItem("accessToken");
   localStorage.removeItem("user");
+  localStorage.removeItem("expiresIn");
   redirectToLogin();
 };
 

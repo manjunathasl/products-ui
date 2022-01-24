@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
 import SearchBox from "../components/SearchBox";
-import { signout, getUser } from "../services/auth";
+import {
+  signout,
+  getUser,
+  refreshToken,
+  tokenExpiresIn,
+} from "../services/auth";
 import { getProducts } from "../services/products";
 import InfiniteScroll from "react-infinite-scroll-component";
 
@@ -12,10 +17,30 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [svcError, setSvcError] = useState("");
   const [totalPages, setTotalPages] = useState(0);
-
   const [page, setPage] = useState(1);
-
   const [searchStr, setSearchStr] = useState("");
+
+  let timer = false;
+
+  const watchForToken = () => {
+    if (timer) return;
+    timer = setInterval(async () => {
+      const expIn = tokenExpiresIn();
+     
+      if (expIn < 1) {
+        signout();
+      }
+      if (expIn < 63) {
+        clearInterval(timer);
+        timer = false;
+        // eslint-disable-next-line no-restricted-globals
+        if (confirm(`Token expires in ${expIn} seconds, would you like to refresh`)) {
+          await refreshToken();
+          watchForToken();
+        }
+      }
+    }, 3000);
+  };
 
   const onSearch = (str) => {
     setSearchStr(str);
@@ -25,6 +50,7 @@ export default function Home() {
     e.preventDefault();
     signout();
   };
+
   const loadMore = () => {
     if (!loading && page < totalPages) {
       setPage(page + 1);
@@ -35,6 +61,7 @@ export default function Home() {
     if (!user) {
       const u = getUser();
       setUser(u);
+      watchForToken();
     }
     const loadProducts = async (page) => {
       try {
@@ -52,22 +79,11 @@ export default function Home() {
     };
 
     loadProducts();
-  }, [page]);
 
-  const columns = [
-    {
-      name: "id",
-      selector: (row) => row.id,
-    },
-    {
-      name: "Name",
-      selector: (row) => row.productName,
-    },
-    {
-      name: "Price",
-      selector: (row) => row.price,
-    },
-  ];
+    return () => {
+      clearInterval(timer);
+    };
+  }, [page]);
 
   return (
     <div className="home">
@@ -87,10 +103,17 @@ export default function Home() {
           <div className="cell">Price</div>
         </div>
         <InfiniteScroll
-          dataLength={(searchStr ? products.filter(it => it.productName.toLowerCase().includes(searchStr.toLowerCase())): products).length}
+          dataLength={
+            (searchStr
+              ? products.filter((it) =>
+                  it.productName.toLowerCase().includes(searchStr.toLowerCase())
+                )
+              : products
+            ).length
+          }
           next={loadMore}
           hasMore={true}
-          loader={loading ? <h4>Loading...</h4> : ''}
+          loader={loading ? <h4>Loading...</h4> : ""}
           height={200}
           endMessage={
             <p style={{ textAlign: "center" }}>
@@ -98,7 +121,12 @@ export default function Home() {
             </p>
           }
         >
-          {(searchStr ? products.filter(it => it.productName.toLowerCase().includes(searchStr.toLowerCase())): products).map((item, index) => (
+          {(searchStr
+            ? products.filter((it) =>
+                it.productName.toLowerCase().includes(searchStr.toLowerCase())
+              )
+            : products
+          ).map((item, index) => (
             <div className="row" key={index}>
               <div className="cell">{item.id}</div>
               <div className="cell">{item.productName}</div>
