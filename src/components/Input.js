@@ -7,7 +7,7 @@ export default function Input(props) {
         placeholder={props.placeholder}
         value={props.state[props.name]}
         onChange={props.changeHandler}
-        className={props.errors?.confirmPassword ? "error" : ""}
+        className={props.errors[props.name] ? "error" : ""}
         disabled={props.disabled}
       />
       {props.errors[props.name] && (
