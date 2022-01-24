@@ -1,6 +1,14 @@
 import { post } from "axios";
 import { setToken, removeToken, BASE_URL, getToken, get } from "./http";
 
+const setUser = (user) =>{
+  localStorage.setItem('user', JSON.stringify(user))
+}
+
+const getUser = () =>{
+  return JSON.parse(localStorage.getItem('user') || {})
+}
+
 const login = async (username, password) => {
   try {
     const res = await post(`${BASE_URL}/auth/login`, {
@@ -10,6 +18,7 @@ const login = async (username, password) => {
     const accessToken = res.data.access_token;
     setToken(accessToken);
     const userRes  = await get("user");
+    setUser(userRes.data)
     return userRes.data;
   } catch (error) {
     throw error?.response?.data ?? new Error("Service error");
@@ -43,4 +52,4 @@ const signout = () => {
   removeToken();
 };
 
-export { login, signup, signout, isLoggedIn, tokenExpiresIn };
+export { login, signup, signout, isLoggedIn, tokenExpiresIn, getUser };

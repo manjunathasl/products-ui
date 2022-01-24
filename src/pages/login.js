@@ -4,21 +4,26 @@ import Input from "../components/Input";
 import { useNavigate } from "react-router-dom";
 import { login } from "../services/auth";
 
-export default function Login() {
+export default function Login(props) {
   let initialState = { userName: "", password: "" };
 
   const [svcError, setSvcError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const onSubmit = async () => {
     setSvcError("");
     try {
+      setLoading(true);
       const data = await login(state.userName, state.password);
       if (data.userName) {
+        props.loggedIn();
         navigate("/");
       }
     } catch (error) {
       setSvcError(error.message);
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -58,6 +63,7 @@ export default function Login() {
             changeHandler={changeHandler}
             state={state}
             errors={errors}
+            disabled={loading}
           />
           <Input
             type="password"
@@ -66,11 +72,12 @@ export default function Login() {
             changeHandler={changeHandler}
             state={state}
             errors={errors}
+            disabled={loading}
           />
           {svcError && <div className="error-text">{svcError}</div>}
           <div className="content-spaced">
             <a href="/signup">Creat account</a>
-            <button type="submit">Sign In</button>
+            <button type="submit" disabled={loading}>{loading ? 'Logging in...' : 'Sign In'}</button>
           </div>
         </form>
       </div>

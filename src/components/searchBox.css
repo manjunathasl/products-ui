@@ -1,6 +1,8 @@
 .search-box {
   position: relative;
+  width: 300px;
 }
+
 .search-box .search-clear {
     position: absolute;
     right: 10px;

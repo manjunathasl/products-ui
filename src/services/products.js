@@ -1,7 +1,12 @@
-import HttpService from "./base-http.service";
+import { get } from "./http";
 
-export default class ProductsService extends HttpService {
-  getProducts(page = 1) {
-    return this.get(`products?page=${page}`);
+const getProducts = async (page = 1) => {
+  try {
+    const res = await get(`products?page=${page}`);
+    return res.data;
+  } catch (error) {
+    throw error?.response?.data ?? new Error("Service error");
   }
-}
+};
+
+export { getProducts };

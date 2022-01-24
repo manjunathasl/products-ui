@@ -8,6 +8,7 @@ export default function Input(props) {
         value={props.state[props.name]}
         onChange={props.changeHandler}
         className={props.errors?.confirmPassword ? "error" : ""}
+        disabled={props.disabled}
       />
       {props.errors[props.name] && (
         <span className="error-text">{props.errors[props.name]}</span>

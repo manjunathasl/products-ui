@@ -12,3 +12,9 @@
     justify-content: right;
     padding: 10px;
 }
+.user a {
+    margin-left: 15px;
+}
+.search{
+    float: right;
+}

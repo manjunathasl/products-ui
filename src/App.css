@@ -85,3 +85,7 @@ button:hover {
   margin-top: 20px;
   display: inline-block;
 }
+input:disabled, select:disabled, button:disabled{
+  opacity: 1;
+  background-color: #e9ecef;
+}

@@ -2,8 +2,6 @@ import axios from "axios";
 
 const BASE_URL = "http://localhost:8080";
 
-const axiosInstance = axios.create({ baseURL: BASE_URL });
-
 function redirectToLogin() {
   window.location = "/login";
 }
@@ -28,28 +26,28 @@ const getToken = () => {
 
 const removeToken = () => {
   localStorage.removeItem("accessToken");
+  localStorage.removeItem("user");
   redirectToLogin();
 };
 
 const get = async (endpoint, options = {}) => {
-  return axiosInstance
-    .get(`/${endpoint}`, { ...options, ...getAuthHeaders() })
+  return axios
+    .get(`${BASE_URL}/${endpoint}`, { ...options, ...getAuthHeaders() })
     .catch((error) => handleError(error));
 };
 
 const post = async (endpoint, data = {}, options = {}) => {
-  return axiosInstance
-    .post(`/${endpoint}`, data, { ...options, ...getAuthHeaders() })
+  return axios
+    .post(`${BASE_URL}/${endpoint}`, data, { ...options, ...getAuthHeaders() })
     .catch(handleError);
 };
 
 function handleError(error) {
   const { statusCode } = error.response.data;
-
   if (statusCode !== 401) {
     throw error;
   } else {
-    return redirectToLogin();
+    return removeToken();
   }
 }
 
