@@ -1,20 +1,40 @@
 .home {
-    max-width: 1320px;
-    width: 90%;
-    margin-right: 5%;
-    margin-left: 5%;
+  max-width: 1320px;
+  width: 90%;
+  margin-right: 5%;
+  margin-left: 5%;
 }
-.home div {
-    min-height: 60px;
+.home > div {
+  min-height: 60px;
 }
 .user {
-    display: flex;
-    justify-content: right;
-    padding: 10px;
+  display: flex;
+  justify-content: right;
+  padding: 10px;
 }
 .user a {
-    margin-left: 15px;
+  margin-left: 15px;
 }
-.search{
-    float: right;
+.search {
+  width: 100%;
+}
+.search > div {
+  float: right;
+}
+.grid {
+  width: 100%;
+  border: 1px solid #636464;
+}
+.row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 30%);
+  border-bottom: 1px solid #636464;
+  min-height: 20px;
+}
+.header {
+    font-weight: 500;
+}
+.cell{
+    line-height: 50px;
+    padding: 5px;
 }
